@@ -8,13 +8,17 @@ import { ThemeProvider } from "next-themes";
 
 const inter = Inter({subsets: ['latin']})
 
+const metadataBaseUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : (process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3001');
+
 export const metadata: Metadata = {
   title: {
     template: `%s | Sportstore`,
     default: APP_NAME
   },
   description: APP_DESCRIPTION,
-  metadataBase: new URL(SERVER_URL)
+  metadataBase: new URL(metadataBaseUrl),
 };
 
 export default function RootLayout({
