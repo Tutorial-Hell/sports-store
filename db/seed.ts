@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { Pool } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '../lib/generated/prisma/client'
+import { PrismaClient } from '../lib/generated/prisma'
 import sampleData from './sample-data'
 
 async function main() {
