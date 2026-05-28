@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import "@/assets/styles/globals.css";
 import { cn } from "@/lib/utils";
 import { APP_DESCRIPTION, APP_NAME, SERVER_URL } from "@/lib/constants"

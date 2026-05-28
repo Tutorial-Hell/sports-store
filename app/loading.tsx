@@ -1,6 +1,5 @@
 import Image from "next/image";
 import loader from '@/assets/loader.gif';
-import { FileX } from "lucide-react";
 
 const LoadingPage = () => {
     return (<div style={{
