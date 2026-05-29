@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "@/assets/styles/globals.css";
-import { cn } from "@/lib/utils";
-import { APP_DESCRIPTION, APP_NAME, SERVER_URL } from "@/lib/constants"
+import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants"
 import { ThemeProvider } from "next-themes";
-
-
-const inter = Inter({subsets: ['latin']})
 
 const metadataBaseUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`

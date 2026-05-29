@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, UserIcon, EllipsisVertical } from 'lucide-react';
 import ModeToggle from './mode-toggle';
-import { Sheet, SheetTitle, SheetDescription, SheetTrigger, SheetContent} from '@/components/ui/sheet'
+import { Sheet, SheetTitle, SheetTrigger, SheetContent} from '@/components/ui/sheet'
 
 const Menu = () => {
     return ( <div className="flex justify-end gap-3">
