@@ -1,22 +1,23 @@
-# Current Feature
-
-<!-- Feature name and short description -->
+# Current Feature: Auth Layout
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Create `app/(auth)/` route group with `layout.tsx`, `sign-in/page.tsx`, and `sign-out/page.tsx`
+- `AuthLayout` centers content both vertically and horizontally on the page
+- Sign-in page displays a card containing the app logo and sign-in prompts
+- Page titles reflect their route paths
 
 ## Notes
 
-<!-- Any extra notes -->
+- Copy `RootLayout` function from `app/(root)/layout.tsx` and rename to `AuthLayout`
+- Auth layout should NOT include the shared `Header` + `Footer`
+- The card on the sign-in page holds the logo and sign-in form/prompts
 
 ## History
-
-<!-- Keep this updated earliest to latest -->
 
 ### Next.js Project Setup
 - Bootstrapped Next.js 15 app with App Router
