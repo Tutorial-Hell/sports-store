@@ -1,23 +1,20 @@
-# Current Feature: Auth Layout
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Create `app/(auth)/` route group with `layout.tsx`, `sign-in/page.tsx`, and `sign-out/page.tsx`
-- `AuthLayout` centers content both vertically and horizontally on the page
-- Sign-in page displays a card containing the app logo and sign-in prompts
-- Page titles reflect their route paths
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Copy `RootLayout` function from `app/(root)/layout.tsx` and rename to `AuthLayout`
-- Auth layout should NOT include the shared `Header` + `Footer`
-- The card on the sign-in page holds the logo and sign-in form/prompts
+<!-- Any extra notes -->
 
 ## History
+
+<!-- Keep this updated earliest to latest -->
 
 ### Next.js Project Setup
 - Bootstrapped Next.js 15 app with App Router
@@ -37,3 +34,9 @@ In Progress
 - Enabled `earlyAccess` flag in `prisma.config.ts` for driver adapter support
 - Created `db/prisma.ts` as the singleton Prisma client with computed string fields for `price` and `rating` (stored as `Decimal` in Postgres, serialized as `string` to avoid issues across server/client boundaries)
 - Created `db/seed.ts` using the `pg` adapter (instead of Neon serverless) so it can run directly with `tsx` outside of Next.js
+
+### Auth Layout
+- Created `app/(auth)/` route group with `AuthLayout` that centers content vertically and horizontally
+- Added `/sign-in` page: card with logo (links to homepage), title, and description
+- Added `/sign-out` page: logo (links to homepage) and heading, centered
+- Applied Inter as the default site font via `next/font/google` on the body
