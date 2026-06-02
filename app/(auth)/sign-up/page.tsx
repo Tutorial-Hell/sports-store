@@ -3,19 +3,19 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { APP_NAME } from '@/lib/constants'
-import CredentialsSignInForm from './credentials-signin-form'
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
+import SignUpForm from './sign-up-form'
 
 export const metadata: Metadata = {
-  title: 'Sign In',
+  title: 'Sign Up',
 }
 
-export default async function SignInPage(props: {
+const SignUpPage = async(props: {
   searchParams: Promise<{
     callbackUrl: string
   }>
-}) {
+}) => {
 
   const {callbackUrl} =  await props.searchParams
 
@@ -35,14 +35,16 @@ export default async function SignInPage(props: {
                   alt={`${APP_NAME} logo`}
                   priority={true} />
         </Link>
-        <CardTitle className='text-center text-2xl'>Sign In </CardTitle>
+        <CardTitle className='text-center text-2xl'>Create Account </CardTitle>
         <CardDescription className="text-center text-base !mt-1">
-          Sign in to your account to continue
+          Enter your information below to sign up
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-       <CredentialsSignInForm />
+        <SignUpForm />
       </CardContent>
     </Card>
   </div>;
 }
+
+export default SignUpPage

@@ -1,0 +1,47 @@
+[   48251ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3004/sign-in:0
+[   51832ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(pages-dir-browser)/./node_modules/react-dom/cjs/react-dom-client.development.js:28004
+[   52794ms] TypeError: __webpack_modules__[moduleId] is not a function
+    at __webpack_require__ (file:///Users/andrewgrablewski/Desktop/sportstore/.next/server/webpack-runtime.js:25:42)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/shared/lib/image-external.js:20:34)
+    at <unknown> (rsc)/./node_modules/next/dist/shared/lib/image-external.js (/Users/andrewgrablewski/Desktop/sportstore/.next/server/vendor-chunks/next.js:1683:1)
+    at __webpack_require__ (file:///Users/andrewgrablewski/Desktop/sportstore/.next/server/webpack-runtime.js:25:42)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/api/image.js:5:84)
+    at <unknown> (rsc)/./node_modules/next/dist/api/image.js (/Users/andrewgrablewski/Desktop/sportstore/.next/server/vendor-chunks/next.js:20:1)
+    at __webpack_require__ (file:///Users/andrewgrablewski/Desktop/sportstore/.next/server/webpack-runtime.js:25:42)
+    at eval (webpack-internal:///(rsc)/./app/loading.tsx:7:68)
+    at <unknown> (rsc)/./app/loading.tsx (/Users/andrewgrablewski/Desktop/sportstore/.next/server/app/(auth)/sign-in/page.js:55:1)
+    at Function.__webpack_require__ (file:///Users/andrewgrablewski/Desktop/sportstore/.next/server/webpack-runtime.js:25:42)
+    at async createComponentStylesAndScripts (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:8631)
+    at async createComponentTreeInternal (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:35:23077)
+    at async getRSCPayload (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:39:22627)
+    at async renderToStream (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:39:52228)
+    at async renderToHTMLOrFlightImpl (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:39:41120)
+    at async doRender (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2F(auth)%2Fsign-in%2Fpage&page=%2F(auth)%2Fsign-in%2Fpage&appPaths=%2F(auth)%2Fsign-in%2Fpage&pagePath=private-next-app-dir%2F(auth)%2Fsign-in%2Fpage.tsx&appDir=%2FUsers%2Fandrewgrablewski%2FDesktop%2Fsportstore%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2FUsers%2Fandrewgrablewski%2FDesktop%2Fsportstore&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!:452:28)
+    at async AppPageRouteModule.handleResponse (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:41:57424)
+    at async handleResponse (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2F(auth)%2Fsign-in%2Fpage&page=%2F(auth)%2Fsign-in%2Fpage&appPaths=%2F(auth)%2Fsign-in%2Fpage&pagePath=private-next-app-dir%2F(auth)%2Fsign-in%2Fpage.tsx&appDir=%2FUsers%2Fandrewgrablewski%2FDesktop%2Fsportstore%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2FUsers%2Fandrewgrablewski%2FDesktop%2Fsportstore&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!:604:32)
+    at async handler (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2F(auth)%2Fsign-in%2Fpage&page=%2F(auth)%2Fsign-in%2Fpage&appPaths=%2F(auth)%2Fsign-in%2Fpage&pagePath=private-next-app-dir%2F(auth)%2Fsign-in%2Fpage.tsx&appDir=%2FUsers%2Fandrewgrablewski%2FDesktop%2Fsportstore%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2FUsers%2Fandrewgrablewski%2FDesktop%2Fsportstore&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!:982:20)
+    at async DevServer.renderToResponseWithComponentsImpl (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/base-server.js:1430:9)
+    at async DevServer.renderPageComponent (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/base-server.js:1482:24)
+    at async DevServer.renderToResponseImpl (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/base-server.js:1522:32)
+    at async DevServer.pipeImpl (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/base-server.js:1026:25)
+    at async NextNodeServer.handleCatchallRenderRequest (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/next-server.js:394:17)
+    at async DevServer.handleRequestImpl (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/base-server.js:917:17)
+    at async (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/dev/next-dev-server.js:400:20)
+    at async Span.traceAsyncFn (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/trace/trace.js:157:20)
+    at async DevServer.handleRequest (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/dev/next-dev-server.js:396:24)
+    at async invokeRender (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/lib/router-server.js:240:21)
+    at async handleRequest (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/lib/router-server.js:437:24)
+    at async requestHandlerImpl (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/lib/router-server.js:485:13)
+    at async Server.requestListener (file:///Users/andrewgrablewski/Desktop/sportstore/node_modules/next/dist/server/lib/start-server.js:226:13)
+[   52789ms] [LOG] [HMR] connected @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:45
+[   60372ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:206
+[   60713ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:347
+[   67008ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:347
+[   67246ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:206
+[   71604ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:347
+[   72044ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:206
+[   82695ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:347
+[   83154ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:206
+[   95862ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:347
+[   96173ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:206
+[  105006ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:25630

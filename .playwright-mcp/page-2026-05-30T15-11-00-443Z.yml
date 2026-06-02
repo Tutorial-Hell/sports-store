@@ -1,0 +1,8 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - link "Sportstore logo Sportstore" [ref=e5] [cursor=pointer]:
+      - /url: /
+      - img "Sportstore logo" [ref=e6]
+      - generic [ref=e7]: Sportstore
+    - generic [ref=e8]: Sign In
+  - paragraph [ref=e10]: Sign in to your account to continue
