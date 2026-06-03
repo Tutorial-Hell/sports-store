@@ -40,3 +40,10 @@
 - Added `/sign-in` page: card with logo (links to homepage), title, and description
 - Added `/sign-out` page: logo (links to homepage) and heading, centered
 - Applied Inter as the default site font via `next/font/google` on the body
+
+### Add Toast (shadcn/ui)
+- Installed `sonner` via `npx shadcn@latest add sonner` — creates `components/ui/sonner.tsx`
+- Added `<Toaster />` to `app/layout.tsx` for site-wide toast availability
+- `AddToCart` component updated to render a `<Button>` that fires `toast.success()` on click
+- `AddToCart` wired into `ProductCard` (homepage cards) and product detail page action column
+- Fixed pre-existing next-auth v5 build error: `declare module 'next-auth/jwt'` → `@auth/core/jwt`
