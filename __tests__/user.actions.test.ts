@@ -9,6 +9,7 @@ const userUpdate = vi.mocked(prisma.user.update)
 const validAddress = {
   fullName: 'John Doe',
   streetAddress: '123 Main St',
+  city: 'New York',
   postalCode: '12345',
   country: 'United States',
 }

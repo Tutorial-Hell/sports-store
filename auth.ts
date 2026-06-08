@@ -79,6 +79,7 @@ export const config = {
         async jwt({token, user, trigger, session}) {
             // assign user fields to the token
             if(user) {
+                token.id = user.id
                 token.role = user.role
 
                 if(user.name === "NO_NAME") {
@@ -89,10 +90,54 @@ export const config = {
                         data: {name: token.name}
                     })
                 }
+                if(trigger === 'signIn' || trigger === 'signUP') {
+                    const cookiesObject = await cookies()
+                    const sessionCartId = cookiesObject.get('sessionCartId')?.value
+
+                    if(sessionCartId) {
+                        const sessionCart = await prisma.cart.findFirst({
+                            where: { sessionCartId }
+                        })
+                        if(sessionCart){
+                            // Delete current user Cart 
+                            await prisma.cart.deleteMany({
+                                where: {userId: user.id}
+                            })
+
+                            // Assign new Cart
+                            await prisma.cart.update({
+                                where: {id: sessionCart.id},
+                                data: {userId: user.id}
+                            })
+
+                        }
+                    }
+
+                }
             }
             return token
         },
        async authorized({request, auth}: any) {
+            // Array of regex patterns for protected paths
+            const protectedPaths = [
+                /\/shipping-address/,
+                /\/payment-method/,
+                /\/place-order/,
+                /\/profile/,
+                /\/user\/(.*)/,
+                /\/order\/(.*)/,
+                /\/admin/,
+            ]
+            // get pathname from request url object
+            const {pathname} = request.nextUrl
+
+            // Check if user is not authenticated and redirect with callbackUrl
+            if(!auth && protectedPaths.some((p) => p.test(pathname))) {
+                return NextResponse.redirect(
+                    new URL(`/sign-in?callbackUrl=${encodeURIComponent(pathname)}`, request.url)
+                )
+            }
+
             if(!request.cookies.get('sessionCartId')) {
                 // Generate new sessionCartId Cookie
                 const sessionCartId = crypto.randomUUID()

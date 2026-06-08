@@ -30,6 +30,7 @@ const ShippingAddressForm = ({ address }: { address: ShippingAddress | null }) =
         defaultValues: address ?? {
             fullName: '',
             streetAddress: '',
+            city: '',
             postalCode: '',
             country: '',
         },
@@ -73,6 +74,19 @@ const ShippingAddressForm = ({ address }: { address: ShippingAddress | null }) =
                                 <FormLabel>Street Address</FormLabel>
                                 <FormControl>
                                     <Input placeholder="Enter street address" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="city"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>City</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Enter city" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
