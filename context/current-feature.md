@@ -1,26 +1,16 @@
-# Current Feature: ShippingAddress Form
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Build a `ShippingAddressForm` component at `app/(root)/shipping-address/shipping-address-form.tsx`
-- Create the `/shipping-address` page at `app/(root)/shipping-address/page.tsx`
-- Use `shippingAddressSchema` from `lib/validators.ts` for Zod validation
-- Use `ShippingAddress` type from `types/index.ts`
-- Use `react-hook-form` with `@hookform/resolvers/zod` for form state and validation
-- Use shadcn/ui components: `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormMessage`, `Input`, `Button`
-- Fields: Full Name, Street Address, Postal Code, Country (lat/lng are optional, not shown in form)
-- On submit, call a `updateUserAddress` server action and redirect to `/payment-method`
-- Show a loading spinner on the submit button while pending
+<!-- Goals and requirements -->
 
 ## Notes
 
-- `shippingAddressSchema` fields: `fullName`, `streetAddress`, `postalCode`, `country`, `lat` (optional), `lng` (optional)
-- Server action should save address to the user's record in the database
-- Form should pre-populate with the user's existing address if one exists
+<!-- Any extra notes -->
 
 ## History
 
@@ -57,3 +47,11 @@ In Progress
 - `AddToCart` component updated to render a `<Button>` that fires `toast.success()` on click
 - `AddToCart` wired into `ProductCard` (homepage cards) and product detail page action column
 - Fixed pre-existing next-auth v5 build error: `declare module 'next-auth/jwt'` → `@auth/core/jwt`
+
+### ShippingAddress Form
+- Created `app/(root)/shipping-address/shipping-address-form.tsx` — client form using `react-hook-form` + `zodResolver(shippingAddressSchema)` with fields for Full Name, Street Address, Postal Code, Country
+- Created `app/(root)/shipping-address/page.tsx` — server page that guards empty cart, fetches user's existing address, and pre-populates the form
+- Added `updateUserAddress` server action to `lib/actions/user.actions.ts` — validates with `shippingAddressSchema`, saves to `user.address` (JSON field), returns `{ success, message }`
+- Added `components/ui/form.tsx` — shadcn Form component written manually (CLI install failed)
+- Fixed `formatError` in `lib/utils.ts`: removed unnecessary `async`, switched from `error.errors` to `error.issues` (correct Zod v3 API)
+- Added unit tests in `__tests__/user.actions.test.ts` covering happy path, unauthenticated, validation failure, and DB error cases
