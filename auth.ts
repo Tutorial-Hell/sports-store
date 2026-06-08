@@ -90,7 +90,7 @@ export const config = {
                         data: {name: token.name}
                     })
                 }
-                if(trigger === 'signIn' || trigger === 'signUP') {
+                if(trigger === 'signIn' || trigger === 'signUp') {
                     const cookiesObject = await cookies()
                     const sessionCartId = cookiesObject.get('sessionCartId')?.value
 

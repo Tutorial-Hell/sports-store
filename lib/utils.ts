@@ -1,5 +1,4 @@
 import { clsx, type ClassValue } from "clsx"
-import { exists } from "node:fs";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -23,7 +22,7 @@ export function formatNumberWithDecimal(num: number): string {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatError(error: any) {
   if (error.name === 'ZodError') {
-    const fieldErrors = error.issues.map((issue: any) => issue.message)
+    const fieldErrors = error.issues.map((issue: { message: string }) => issue.message)
     return fieldErrors.join('. ')
   }
 
