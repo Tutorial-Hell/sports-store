@@ -9,5 +9,13 @@ vi.mock('@/db/prisma', () => ({
       update: vi.fn(),
       delete: vi.fn(),
     },
+    user: {
+      findFirst: vi.fn(),
+      update: vi.fn(),
+    },
   },
+}))
+
+vi.mock('@/auth', () => ({
+  auth: vi.fn(),
 }))

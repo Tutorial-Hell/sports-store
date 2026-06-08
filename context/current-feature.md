@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: ShippingAddress Form
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Build a `ShippingAddressForm` component at `app/(root)/shipping-address/shipping-address-form.tsx`
+- Create the `/shipping-address` page at `app/(root)/shipping-address/page.tsx`
+- Use `shippingAddressSchema` from `lib/validators.ts` for Zod validation
+- Use `ShippingAddress` type from `types/index.ts`
+- Use `react-hook-form` with `@hookform/resolvers/zod` for form state and validation
+- Use shadcn/ui components: `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormMessage`, `Input`, `Button`
+- Fields: Full Name, Street Address, Postal Code, Country (lat/lng are optional, not shown in form)
+- On submit, call a `updateUserAddress` server action and redirect to `/payment-method`
+- Show a loading spinner on the submit button while pending
 
 ## Notes
 
-<!-- Any extra notes -->
+- `shippingAddressSchema` fields: `fullName`, `streetAddress`, `postalCode`, `country`, `lat` (optional), `lng` (optional)
+- Server action should save address to the user's record in the database
+- Form should pre-populate with the user's existing address if one exists
 
 ## History
 
