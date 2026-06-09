@@ -55,3 +55,10 @@
 - Added `components/ui/form.tsx` — shadcn Form component written manually (CLI install failed)
 - Fixed `formatError` in `lib/utils.ts`: removed unnecessary `async`, switched from `error.errors` to `error.issues` (correct Zod v3 API)
 - Added unit tests in `__tests__/user.actions.test.ts` covering happy path, unauthenticated, validation failure, and DB error cases
+
+### Payment Method Form
+- Created `app/(root)/payment-method/payment-method-form.tsx` — client form using `react-hook-form` + `zodResolver(paymentMethodSchema)` with `RadioGroup` for selecting from `PAYMENT_METHODS`, `useTransition` for pending state, and `toast` for feedback; redirects to `/place-order` on success
+- Created `app/(root)/payment-method/page.tsx` — server page that guards empty cart, fetches user's saved payment method, and pre-selects it in the form
+- Added `components/ui/radio-group.tsx` — shadcn RadioGroup using `@radix-ui/react-radio-group` (rewrote auto-installed version which used incompatible `radix-ui` bundle)
+- Fixed `PAYMENT_METHODS` constant default in `lib/constants/index.ts`: was `['PayPal, Stripe, CashOnDelivery']` (one element) — corrected to `['PayPal', 'Stripe', 'CashOnDelivery']`
+- Added unit tests for `updateUserPaymentMethod` covering happy path, user not found, invalid payment type, and DB error
