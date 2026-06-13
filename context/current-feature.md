@@ -62,3 +62,20 @@
 - Added `components/ui/radio-group.tsx` — shadcn RadioGroup using `@radix-ui/react-radio-group` (rewrote auto-installed version which used incompatible `radix-ui` bundle)
 - Fixed `PAYMENT_METHODS` constant default in `lib/constants/index.ts`: was `['PayPal, Stripe, CashOnDelivery']` (one element) — corrected to `['PayPal', 'Stripe', 'CashOnDelivery']`
 - Added unit tests for `updateUserPaymentMethod` covering happy path, user not found, invalid payment type, and DB error
+
+### Order Details Page
+- Created `app/(root)/order/[id]/order-details-table.tsx` — displays shipping address, payment status, order items, and price summary for an order
+- Wired `OrderDetailsTable` into `app/(root)/order/[id]/page.tsx`
+- Extended `db/prisma.ts` with computed string fields for `cart`/`order`/`orderItem` Decimal prices (itemsPrice, shippingPrice, taxPrice, totalPrice, item price)
+- Added `formatId` and `formatDateTime` helpers to `lib/utils.ts`
+
+### Place Order Form Fix
+- Fixed `app/(root)/place-order/place-order-form.tsx`: `PlaceOrderButton` was defined inside the render body, failing `react-hooks/static-components` and breaking the production build — moved it to module scope
+
+### PayPal Create Order & Capture Payment
+- Added `createOrder(price)` and `capturePayment(orderId)` to `lib/paypal.ts`, calling the PayPal Orders v2 API (`/v2/checkout/orders`, `/v2/checkout/orders/{id}/capture`) via `generateAccessToken()`, with shared `handleResponse<T>` helper and typed `PayPalOrderResponse`/`PayPalCaptureResponse` responses
+- Added `paymentResultSchema` to `lib/validators.ts` and `PaymentResult` type to `types/index.ts`
+- Added `createPayPalOrder(orderId)` server action — creates the PayPal order and stores its id on `order.paymentResult`
+- Added `approvePayPalOrder(orderId, { orderID })` server action — captures payment, validates the captured order id/status, marks the order paid via `updateOrderToPaid`, and revalidates `/order/[id]`
+- Added unit tests in `__tests__/paypal.test.ts` (createOrder/capturePayment) and `__tests__/order.actions.test.ts` (createPayPalOrder/approvePayPalOrder); added `prisma.order` and `next/cache` mocks to `__tests__/setup.ts`
+- PayPal buttons/UI wiring on the order details page is out of scope for this feature
