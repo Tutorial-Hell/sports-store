@@ -79,3 +79,11 @@
 - Added `approvePayPalOrder(orderId, { orderID })` server action — captures payment, validates the captured order id/status, marks the order paid via `updateOrderToPaid`, and revalidates `/order/[id]`
 - Added unit tests in `__tests__/paypal.test.ts` (createOrder/capturePayment) and `__tests__/order.actions.test.ts` (createPayPalOrder/approvePayPalOrder); added `prisma.order` and `next/cache` mocks to `__tests__/setup.ts`
 - PayPal buttons/UI wiring on the order details page is out of scope for this feature
+
+### PayPal User Interface
+- `app/(root)/order/[id]/page.tsx` reads `process.env.PAYPAL_CLIENT_ID` and passes it to `OrderDetailsTable` as a `paypalClientId` prop
+- `OrderDetailsTable` renders PayPal smart buttons below the pricing summary card when `paymentMethod === 'PayPal' && !isPaid`, wrapped in `PayPalScriptProvider options={{ clientId: paypalClientId }}`
+- Added module-scope `PrintLoadingState` component using `usePayPalScriptReducer` to show "Loading PayPal..." / "Error loading PayPal" states
+- `PayPalButtons.createOrder` calls `createPayPalOrder(order.id)` and returns the PayPal order id, or `toast.error` + throws on failure
+- `PayPalButtons.onApprove` calls `approvePayPalOrder(order.id, { orderID })` and shows `toast.success`/`toast.error` based on the result
+- Added `@paypal/react-paypal-js` v10 dependency
