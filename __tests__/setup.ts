@@ -13,9 +13,17 @@ vi.mock('@/db/prisma', () => ({
       findFirst: vi.fn(),
       update: vi.fn(),
     },
+    order: {
+      findFirst: vi.fn(),
+      update: vi.fn(),
+    },
   },
 }))
 
 vi.mock('@/auth', () => ({
   auth: vi.fn(),
+}))
+
+vi.mock('next/cache', () => ({
+  revalidatePath: vi.fn(),
 }))
