@@ -6,6 +6,17 @@ import {Check, Loader } from 'lucide-react'
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
+const PlaceOrderButton = () => {
+    const {pending} = useFormStatus()
+    return (
+        <Button disabled={pending} className="w-full bg-black text-white hover:bg-black/90">
+            {pending ? (<Loader className="w-4 animate-spin"/>) : (
+                <Check className="w-4 h-4" />
+            )} {' '} Place Order
+        </Button>
+    )
+}
+
 const  PlaceOrderForm= () => {
     const router = useRouter()
 
@@ -18,18 +29,6 @@ const  PlaceOrderForm= () => {
             router.push(res.redirectTo)
         }
     }
-
-    const PlaceOrderButton = () => {
-        const {pending} = useFormStatus()
-        return (
-            <Button disabled={pending} className="w-full bg-black text-white hover:bg-black/90">
-                {pending ? (<Loader className="w-4 animate-spin"/>) : (
-                    <Check className="w-4 h-4" /> 
-                )} {' '} Place Order
-            </Button>
-        )
-    }
-
 
     return ( <form onSubmit={handleSubmit} className="w-full">
         <PlaceOrderButton />
