@@ -86,8 +86,11 @@ export async function createOrder() {
 
 // Get order by id
 export  async function getOrderById(orderId: string) {
+    const session = await auth()
+    if(!session?.user?.id) return null
+
     const data = await prisma.order.findFirst({
-        where: {id: orderId},
+        where: {id: orderId, userId: session.user.id},
         include: {orderitems: true,
         user: {select: {name: true, email: true}},
      }
@@ -98,8 +101,11 @@ export  async function getOrderById(orderId: string) {
 // Create a new PayPal order for an existing order
 export async function createPayPalOrder(orderId: string) {
     try {
+        const session = await auth()
+        if(!session?.user?.id) throw new Error('User is not authenticated')
+
         const order = await prisma.order.findFirst({
-            where: {id: orderId}
+            where: {id: orderId, userId: session.user.id}
         })
 
         if(!order) throw new Error('Order not found')
@@ -127,8 +133,11 @@ export async function createPayPalOrder(orderId: string) {
 // Approve PayPal order and mark order as paid
 export async function approvePayPalOrder(orderId: string, data: {orderID: string}) {
     try {
+        const session = await auth()
+        if(!session?.user?.id) throw new Error('User is not authenticated')
+
         const order = await prisma.order.findFirst({
-            where: {id: orderId}
+            where: {id: orderId, userId: session.user.id}
         })
 
         if(!order) throw new Error('Order not found')

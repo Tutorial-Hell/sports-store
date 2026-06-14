@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { prisma } from '@/db/prisma'
+import { auth } from '@/auth'
 import { paypal } from '@/lib/paypal'
-import { createPayPalOrder, approvePayPalOrder } from '@/lib/actions/order.actions'
+import { createPayPalOrder, approvePayPalOrder, getOrderById } from '@/lib/actions/order.actions'
 
 vi.mock('@/lib/paypal', () => ({
   paypal: {
@@ -11,6 +12,7 @@ vi.mock('@/lib/paypal', () => ({
   },
 }))
 
+const mockAuth = vi.mocked(auth)
 const orderFindFirst = vi.mocked(prisma.order.findFirst)
 const orderUpdate = vi.mocked(prisma.order.update)
 const createOrder = vi.mocked(paypal.createOrder)
@@ -18,6 +20,7 @@ const capturePayment = vi.mocked(paypal.capturePayment)
 
 const mockOrder = {
   id: 'order-1',
+  userId: 'user-1',
   totalPrice: '100.00',
   isPaid: false,
   paymentResult: { id: 'paypal-order-id', status: '', email_address: '', pricePaid: '0' },
@@ -25,6 +28,7 @@ const mockOrder = {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  mockAuth.mockResolvedValue({ user: { id: 'user-1' } } as never)
 })
 
 describe('createPayPalOrder', () => {
@@ -62,6 +66,29 @@ describe('createPayPalOrder', () => {
     expect(createOrder).not.toHaveBeenCalled()
     expect(result.success).toBe(false)
     expect(result.message).toBe('Order not found')
+  })
+
+  it('returns failure when user is not authenticated', async () => {
+    mockAuth.mockResolvedValue(null as never)
+
+    const result = await createPayPalOrder('order-1')
+
+    expect(orderFindFirst).not.toHaveBeenCalled()
+    expect(createOrder).not.toHaveBeenCalled()
+    expect(result.success).toBe(false)
+    expect(result.message).toBe('User is not authenticated')
+  })
+
+  it('scopes the order lookup to the authenticated user', async () => {
+    orderFindFirst.mockResolvedValue(mockOrder as never)
+    createOrder.mockResolvedValue({ id: 'paypal-order-id' } as never)
+    orderUpdate.mockResolvedValue({} as never)
+
+    await createPayPalOrder('order-1')
+
+    expect(orderFindFirst).toHaveBeenCalledWith({
+      where: { id: 'order-1', userId: 'user-1' },
+    })
   })
 
   it('returns failure when PayPal create order throws', async () => {
@@ -118,6 +145,37 @@ describe('approvePayPalOrder', () => {
     expect(result.message).toBe('Order not found')
   })
 
+  it('returns failure when user is not authenticated', async () => {
+    mockAuth.mockResolvedValue(null as never)
+
+    const result = await approvePayPalOrder('order-1', { orderID: 'paypal-order-id' })
+
+    expect(orderFindFirst).not.toHaveBeenCalled()
+    expect(capturePayment).not.toHaveBeenCalled()
+    expect(result.success).toBe(false)
+    expect(result.message).toBe('User is not authenticated')
+  })
+
+  it('scopes the order lookup to the authenticated user', async () => {
+    orderFindFirst
+      .mockResolvedValueOnce(mockOrder as never)
+      .mockResolvedValueOnce({ ...mockOrder, orderitems: [] } as never)
+
+    capturePayment.mockResolvedValue({
+      id: 'paypal-order-id',
+      status: 'COMPLETED',
+      payer: { email_address: 'buyer@example.com' },
+      purchase_units: [{ payments: { captures: [{ amount: { value: '100.00' } }] } }],
+    } as never)
+    orderUpdate.mockResolvedValue({} as never)
+
+    await approvePayPalOrder('order-1', { orderID: 'paypal-order-id' })
+
+    expect(orderFindFirst).toHaveBeenNthCalledWith(1, {
+      where: { id: 'order-1', userId: 'user-1' },
+    })
+  })
+
   it('returns failure when capture status is not completed', async () => {
     orderFindFirst.mockResolvedValue(mockOrder as never)
     capturePayment.mockResolvedValue({
@@ -149,5 +207,31 @@ describe('approvePayPalOrder', () => {
 
     expect(result.success).toBe(false)
     expect(result.message).toBe('DB connection failed')
+  })
+})
+
+describe('getOrderById', () => {
+  it('returns null when user is not authenticated', async () => {
+    mockAuth.mockResolvedValue(null as never)
+
+    const result = await getOrderById('order-1')
+
+    expect(orderFindFirst).not.toHaveBeenCalled()
+    expect(result).toBeNull()
+  })
+
+  it('scopes the lookup to the authenticated user and returns null if not found', async () => {
+    orderFindFirst.mockResolvedValue(null as never)
+
+    const result = await getOrderById('order-1')
+
+    expect(orderFindFirst).toHaveBeenCalledWith({
+      where: { id: 'order-1', userId: 'user-1' },
+      include: {
+        orderitems: true,
+        user: { select: { name: true, email: true } },
+      },
+    })
+    expect(result).toBeNull()
   })
 })
