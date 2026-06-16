@@ -60,11 +60,6 @@ export const config = {
       session.user.role = token.role;
       session.user.name = token.name;
 
-      // If there is an update, set the user name
-      if (trigger === "update") {
-        session.user.name = user.name;
-      }
-
       return session;
     },
     async jwt({ token, user, trigger, session }: any) {
@@ -82,6 +77,9 @@ export const config = {
             where: { id: user.id },
             data: { name: token.name },
           });
+        }
+        if (session?.user.name && trigger === 'update') {
+          token.name = session.user.name
         }
 
         if (trigger === "signIn" || trigger === "signUp") {
