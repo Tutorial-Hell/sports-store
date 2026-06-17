@@ -71,6 +71,13 @@ export function round2(value: number | string) {
     return `..${id.substring(id.length - 6)}`
   }
 
+  // Format Number
+  const NUMBER_FORMATTER = new Intl.NumberFormat('en-US')
+
+  export function formatNumber(number: number) {
+    return NUMBER_FORMATTER.format(number)
+  }
+
   // Format Date and Times
 export const formatDateTime = (dateString: Date) => {
   const dateTimeOptions: Intl.DateTimeFormatOptions = {
