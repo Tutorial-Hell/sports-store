@@ -2,19 +2,17 @@
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+Not Started
 
 ## Goals
 
-<!-- Goals and requirements -->
+<!-- Add goals here -->
 
 ## Notes
 
-<!-- Any extra notes -->
+<!-- Add notes here -->
 
 ## History
-
-<!-- Keep this updated earliest to latest -->
 
 ### Next.js Project Setup
 - Bootstrapped Next.js 15 app with App Router
@@ -87,3 +85,12 @@
 - `PayPalButtons.createOrder` calls `createPayPalOrder(order.id)` and returns the PayPal order id, or `toast.error` + throws on failure
 - `PayPalButtons.onApprove` calls `approvePayPalOrder(order.id, { orderID })` and shows `toast.success`/`toast.error` based on the result
 - Added `@paypal/react-paypal-js` v10 dependency
+
+### Sales Chart
+- Added `app/admin/` section with layout (`app/admin/layout.tsx`) and main-nav (`app/admin/main-nav.tsx`) linking Overview, Products, Orders, Users
+- Added `app/admin/overview/page.tsx` — server page showing total revenue, order count, customer count, product count cards, a Recharts bar chart of monthly sales, and a recent sales table
+- Added `app/admin/overview/sales-chart.tsx` — `'use client'` Recharts `BarChart` inside `ResponsiveContainer`, XAxis by month, YAxis with `$` prefix, bars using `fill="var(--primary)"`
+- Added `getOrderSummary()` server action in `lib/actions/order.actions.ts` — aggregates counts, total sales, monthly sales via raw SQL (`to_char("createdAt", 'MM/YY')`), and latest 6 orders
+- Fixed IDOR vulnerability in `getOrderById`, `createPayPalOrder`, `approvePayPalOrder` — added auth session check and `userId` scoping; admin users bypass `userId` filter in `getOrderById`
+- Added admin link to `components/shared/header/user-button.tsx` for users with `role === 'admin'`
+- Added `types/next-auth.d.ts` to augment session user with `role` field
