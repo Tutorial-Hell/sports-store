@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { auth } from "@/auth";
+import { requireAdmin } from "@/lib/auth-guard";
 import { getOrderSummary } from "@/lib/actions/order.actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BadgeDollarSign, Barcode, CreditCardIcon, Users } from "lucide-react";
@@ -13,11 +13,7 @@ export const metadata:Metadata ={
 }
 
 const AdminOverviewPage = async () => {
-    const session = await auth()
-
-    if(session?.user?.role !=='admin') {
-        throw new Error('User is not authorized')
-    }
+    await requireAdmin()
 
     const summary = await getOrderSummary()
 
