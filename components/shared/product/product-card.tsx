@@ -11,12 +11,14 @@ const ProductCard = ({product}: {product: Product }) => {
 
                   <CardHeader className="p-0 items-center">
                     <Link href={`/product/${product.slug}`}>
-                      <Image
-                        src={product.images[0]}
-                        alt={product.name}
-                        height={300}
-                        width={300}
-                        priority={true} />
+                      {product.images[0] && (
+                        <Image
+                          src={product.images[0]}
+                          alt={product.name}
+                          height={300}
+                          width={300}
+                          priority={true} />
+                      )}
                     </Link>
                   </CardHeader>
                   <CardContent className="p-4 grid gap-4">

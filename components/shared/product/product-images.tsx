@@ -7,17 +7,20 @@ import { cn } from '@/lib/utils'
 
 const ProductImages = ({images}: {images: string[]}) => {
 
+    const validImages = images.filter(Boolean)
     const [current, setCurrent] = useState(0)
-    
+
+    if (!validImages.length) return null
+
     return (<>
         <div className="space-y-4">
-            <Image src={images[current]}
+            <Image src={validImages[current]}
                    alt='product image'
                    width={1000}
                    height={1000}
                    className="min-h-[300px] object-cover object-center" />
           <div className="flex">
-            {images.map((image, index) => (
+            {validImages.map((image, index) => (
                 <div key={image} 
                      onClick={() => setCurrent(index)} 
                      className={cn('border mr-2 cursor-pointer hover:border-orange-600', 

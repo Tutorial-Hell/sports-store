@@ -1,10 +1,10 @@
-import type { NextAuthConfig } from "next-auth";
-import { NextResponse } from "next/server";
+import type { NextAuthConfig, Session } from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
 
 export const authConfig = {
   providers: [], // Required by NextAuthConfig type
   callbacks: {
-    authorized({ request, auth }: any) {
+    authorized({ request, auth }: { request: NextRequest; auth: Session | null }) {
       // Array of regex patterns of paths we want to protect
       const protectedPaths = [
         /\/shipping-address/,

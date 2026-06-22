@@ -1,4 +1,5 @@
-import NextAuth from "next-auth";
+import NextAuth, { Session, User } from "next-auth";
+import type { JWT } from "@auth/core/jwt";
 import { authConfig } from "./auth.config";
 import { prisma } from "@/db/prisma";
 import { cookies } from "next/headers";
@@ -54,15 +55,15 @@ export const config = {
   ],
   callbacks: {
     ...authConfig.callbacks,
-    async session({ session, user, trigger, token }: any) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       // Set the user ID from the token
       session.user.id = token.sub;
-      session.user.role = token.role;
+      session.user.role = token.role ?? '';
       session.user.name = token.name;
 
       return session;
     },
-    async jwt({ token, user, trigger, session }: any) {
+    async jwt({ token, user, trigger, session }: { token: JWT; user: User; trigger?: string; session?: Session }) {
       // Assign user fields to token
       if (user) {
         token.id = user.id;

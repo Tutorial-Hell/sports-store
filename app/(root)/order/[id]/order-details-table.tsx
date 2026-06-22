@@ -13,7 +13,7 @@ import { createPayPalOrder,
          updateOrderToPaidCOD,
          deliverOrder
      } from "@/lib/actions/order.actions";
-import { useTransition } from "react";
+import { useTransition } from 'react'
 import { toast } from "sonner";
 
 
@@ -25,7 +25,47 @@ const PrintLoadingState = () => {
     return null
 }
 
-const OrderDetailsTable = ({order, paypalClientId,isAdmin}: 
+const MarkAsPaidButton = ({orderId}: {orderId: string}) => {
+    const [isPending, startTransition] = useTransition()
+    return (
+        <Button
+          type="button"
+          disabled={isPending}
+          onClick={() => startTransition(async () => {
+            const res = await updateOrderToPaidCOD(orderId)
+            if(res?.success) {
+                toast.success(res.message)
+            } else {
+                toast.error(res?.message)
+            }
+          })}
+          variant="default">
+            {isPending ? 'processing...' : 'Mark As Paid'}
+        </Button>
+    )
+}
+
+const MarkAsDeliveredButton = ({orderId}: {orderId: string}) => {
+    const [isPending, startTransition] = useTransition()
+    return (
+        <Button
+          type="button"
+          disabled={isPending}
+          onClick={() => startTransition(async () => {
+            const res = await deliverOrder(orderId)
+            if(res?.success) {
+                toast.success(res.message)
+            } else {
+                toast.error(res?.message)
+            }
+          })}
+          variant="default">
+            {isPending ? 'processing...' : 'Mark As Delivered'}
+        </Button>
+    )
+}
+
+const OrderDetailsTable = ({order, paypalClientId,isAdmin}:
     {order: Order, paypalClientId: string, isAdmin:boolean}) => {
     const {
         id,
@@ -58,47 +98,6 @@ const OrderDetailsTable = ({order, paypalClientId,isAdmin}:
         } else {
             toast.error(res.message)
         }
-    }
-
-    // Button to mark order as paid
-    const MarkAsPaidButton = () => {
-        const [isPending, startTransition] = useTransition()
-        return  (
-            <Button 
-              type="button"
-              disabled={isPending}
-              onClick={() => startTransition(async () => {
-                const res = await updateOrderToPaidCOD(order.id)
-                if(res?.success) {
-                    toast.success(res.message)
-                } else {
-                    toast.error(res?.message)
-                }
-              })}
-              variant="default">
-                {isPending ? 'processing...' : 'Mark As Paid'}
-            </Button>
-        )
-    }
-
-    const MarkAsDeliveredButton = () => {
-        const [isPending, startTransition] = useTransition()
-        return  (
-            <Button 
-              type="button"
-              disabled={isPending}
-              onClick={() => startTransition(async () => {
-                const res = await deliverOrder(order.id)
-                if(res?.success) {
-                    toast.success(res.message)
-                } else {
-                    toast.error(res?.message)
-                }
-              })}
-              variant="default">
-                {isPending ? 'processing...' : 'Mark As Delivered'}
-            </Button>
-        )
     }
 
     return ( <>
@@ -205,12 +204,11 @@ const OrderDetailsTable = ({order, paypalClientId,isAdmin}:
                             )}
                             {/* Cash On Delivery */}
                             {isAdmin && !isPaid && paymentMethod == 'CashOnDelivery' && (
-                                <MarkAsPaidButton/>
+                                <MarkAsPaidButton orderId={id}/>
                             )}
-                            {
-                             isAdmin && isPaid && !isDelivered &&
-                                <MarkAsDeliveredButton/> 
-                            }
+                            {isAdmin && isPaid && !isDelivered && (
+                                <MarkAsDeliveredButton orderId={id}/>
+                            )}
                 </CardContent>
             </Card>
         </div>
