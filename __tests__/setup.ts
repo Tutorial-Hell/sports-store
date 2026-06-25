@@ -5,6 +5,7 @@ vi.mock('@/db/prisma', () => ({
     product: {
       findMany: vi.fn(),
       findFirst: vi.fn(),
+      count: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
       delete: vi.fn(),

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { prisma } from '@/db/prisma'
-import { getLatestProducts, getProductBySlug } from '@/lib/actions/product.actions'
+import { getLatestProducts, getProductBySlug, getAllProducts } from '@/lib/actions/product.actions'
 
 const mockProduct = {
   id: '1',
@@ -21,6 +21,7 @@ const mockProduct = {
 
 const findMany = vi.mocked(prisma.product.findMany)
 const findFirst = vi.mocked(prisma.product.findFirst)
+const count = vi.mocked(prisma.product.count)
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -46,6 +47,54 @@ describe('getLatestProducts', () => {
     const result = await getLatestProducts()
 
     expect(result).toEqual([])
+  })
+})
+
+describe('getAllProducts', () => {
+  it('returns all products with no filter when query is empty', async () => {
+    findMany.mockResolvedValue([mockProduct] as never)
+    count.mockResolvedValue(1 as never)
+
+    const result = await getAllProducts({ query: '', page: 1 })
+
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: {} })
+    )
+    expect(count).toHaveBeenCalledWith({ where: {} })
+    expect(result.data).toHaveLength(1)
+  })
+
+  it('filters by name when query is provided', async () => {
+    findMany.mockResolvedValue([mockProduct] as never)
+    count.mockResolvedValue(1 as never)
+
+    await getAllProducts({ query: 'shoes', page: 1 })
+
+    const expectedFilter = { name: { contains: 'shoes', mode: 'insensitive' } }
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: expectedFilter })
+    )
+    expect(count).toHaveBeenCalledWith({ where: expectedFilter })
+  })
+
+  it('calculates totalPages from the filtered count', async () => {
+    findMany.mockResolvedValue([] as never)
+    count.mockResolvedValue(10 as never)
+
+    const result = await getAllProducts({ query: '', page: 1, limit: 4 })
+
+    expect(result.totalPages).toBe(3)
+  })
+
+  it('applies correct pagination skip based on page', async () => {
+    findMany.mockResolvedValue([] as never)
+    count.mockResolvedValue(0 as never)
+
+    await getAllProducts({ query: '', page: 3, limit: 4 })
+
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ skip: 8, take: 4 })
+    )
   })
 })
 
