@@ -1,16 +1,20 @@
-# Current Feature
+# Current Feature: Admin Product Search Filter
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals here -->
+- Update `getAllProducts` in `lib/actions/product.actions.ts` to filter by `query` using a case-insensitive `name` match
+- Scope the `count` query to the same filter so pagination is correct
+- No UI changes needed — the page already passes `query` and shows a "Remove Filter" badge
 
 ## Notes
 
-<!-- Add notes here -->
+- The `query` param is already extracted from `searchParams` in `app/admin/products/page.tsx` and passed to `getAllProducts`
+- `getAllProducts` accepts `query` in its signature but ignores it in the Prisma call
+- Use Prisma `contains` + `mode: 'insensitive'` for the filter
 
 ## History
 
