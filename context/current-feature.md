@@ -1,20 +1,16 @@
-# Current Feature: Admin Product Search Filter
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Update `getAllProducts` in `lib/actions/product.actions.ts` to filter by `query` using a case-insensitive `name` match
-- Scope the `count` query to the same filter so pagination is correct
-- No UI changes needed — the page already passes `query` and shows a "Remove Filter" badge
+<!-- Add goals here -->
 
 ## Notes
 
-- The `query` param is already extracted from `searchParams` in `app/admin/products/page.tsx` and passed to `getAllProducts`
-- `getAllProducts` accepts `query` in its signature but ignores it in the Prisma call
-- Use Prisma `contains` + `mode: 'insensitive'` for the filter
+<!-- Add notes here -->
 
 ## History
 
@@ -89,6 +85,13 @@ In Progress
 - `PayPalButtons.createOrder` calls `createPayPalOrder(order.id)` and returns the PayPal order id, or `toast.error` + throws on failure
 - `PayPalButtons.onApprove` calls `approvePayPalOrder(order.id, { orderID })` and shows `toast.success`/`toast.error` based on the result
 - Added `@paypal/react-paypal-js` v10 dependency
+
+### Admin Product Search Filter
+- Updated `getAllProducts` in `lib/actions/product.actions.ts` to filter by `name` using Prisma `contains` + `mode: 'insensitive'` when a `query` param is present
+- Scoped the `count` query to the same filter so pagination reflects filtered results, not total product count
+- Fixed `components/admin/admin-search.tsx`: replaced `useState`/`useEffect` (which caused a React Compiler `setState-in-effect` build error) with an uncontrolled input using `defaultValue` and a `key` prop keyed on the query param
+- Wired `AdminSearch` into `app/admin/layout.tsx`, replacing the previous static `<Input>` that had no form or action
+- Added 4 unit tests for `getAllProducts` covering empty query, filtered query, pagination count, and pagination skip; added `count` mock to `__tests__/setup.ts`
 
 ### Sales Chart
 - Added `app/admin/` section with layout (`app/admin/layout.tsx`) and main-nav (`app/admin/main-nav.tsx`) linking Overview, Products, Orders, Users
