@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Admin Orders & Users Search Filter
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals here -->
+- Add `query` param to `getAllOrders` and filter by buyer name (`user.name`) using `contains` + `mode: 'insensitive'`; scope `count` to the same filter
+- Add `query` param to `getAllUsers` and filter by `name` using `contains` + `mode: 'insensitive'`; scope `count` to the same filter
+- Update `app/admin/orders/page.tsx` to read `query` from `searchParams`, pass it to `getAllOrders`, and show the "Filtered by / Remove Filter" UI
+- Update `app/admin/users/page.tsx` to read `query` from `searchParams`, pass it to `getAllUsers`, and show the "Filtered by / Remove Filter" UI
+- `AdminSearch` already routes to the correct page by pathname — no changes needed there
 
 ## Notes
 
-<!-- Add notes here -->
+- Follow the exact pattern from `getAllProducts`: extract `queryFilter`, apply to both `findMany`/`findMany` and `count`
+- Orders filter on the related user's name via a Prisma relation filter: `{ user: { name: { contains: query, mode: 'insensitive' } } }`
+- Users filter on `name` directly: same as products filtering on `name`
+- The "Filtered by" UI block lives between the page `<h2>` and the table — match the products page layout
 
 ## History
 

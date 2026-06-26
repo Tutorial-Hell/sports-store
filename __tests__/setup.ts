@@ -11,11 +11,15 @@ vi.mock('@/db/prisma', () => ({
       delete: vi.fn(),
     },
     user: {
+      findMany: vi.fn(),
       findFirst: vi.fn(),
+      count: vi.fn(),
       update: vi.fn(),
     },
     order: {
+      findMany: vi.fn(),
       findFirst: vi.fn(),
+      count: vi.fn(),
       update: vi.fn(),
     },
   },

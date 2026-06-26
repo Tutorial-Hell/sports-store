@@ -219,15 +219,20 @@ export async function getMyOrders({
 }
 
 // Get all orders (admin)
-export async function getAllOrders({ limit = PAGE_SIZE, page }: { limit?: number; page: number }) {
+export async function getAllOrders({ limit = PAGE_SIZE, page, query }: { limit?: number; page: number; query: string }) {
+    const queryFilter = query
+        ? { user: { name: { contains: query, mode: 'insensitive' as const } } }
+        : {};
+
     const data = await prisma.order.findMany({
+        where: queryFilter,
         orderBy: { createdAt: 'desc' },
         take: limit,
         skip: (page - 1) * limit,
         include: { user: { select: { name: true } } },
     })
 
-    const dataCount = await prisma.order.count()
+    const dataCount = await prisma.order.count({ where: queryFilter })
 
     return {
         data,

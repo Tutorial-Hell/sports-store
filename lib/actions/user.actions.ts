@@ -155,17 +155,24 @@ export async function updateProfile(user: { name: string; email: string }) {
 export async function getAllUsers({
   limit = PAGE_SIZE,
   page,
+  query,
 }: {
   limit?: number;
   page: number;
+  query: string;
 }) {
+  const queryFilter = query
+    ? { name: { contains: query, mode: 'insensitive' as const } }
+    : {};
+
   const data = await prisma.user.findMany({
+    where: queryFilter,
     orderBy: { createdAt: 'desc' },
     take: limit,
     skip: (page - 1) * limit,
   });
 
-  const dataCount = await prisma.user.count();
+  const dataCount = await prisma.user.count({ where: queryFilter });
 
   return {
     data,
