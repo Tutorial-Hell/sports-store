@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { prisma } from '@/db/prisma'
 import { auth } from '@/auth'
 import { paypal } from '@/lib/paypal'
-import { createPayPalOrder, approvePayPalOrder, getOrderById } from '@/lib/actions/order.actions'
+import { createPayPalOrder, approvePayPalOrder, getOrderById, getAllOrders } from '@/lib/actions/order.actions'
 
 vi.mock('@/lib/paypal', () => ({
   paypal: {
@@ -13,7 +13,9 @@ vi.mock('@/lib/paypal', () => ({
 }))
 
 const mockAuth = vi.mocked(auth)
+const orderFindMany = vi.mocked(prisma.order.findMany)
 const orderFindFirst = vi.mocked(prisma.order.findFirst)
+const orderCount = vi.mocked(prisma.order.count)
 const orderUpdate = vi.mocked(prisma.order.update)
 const createOrder = vi.mocked(paypal.createOrder)
 const capturePayment = vi.mocked(paypal.capturePayment)
@@ -29,6 +31,43 @@ const mockOrder = {
 beforeEach(() => {
   vi.clearAllMocks()
   mockAuth.mockResolvedValue({ user: { id: 'user-1' } } as never)
+})
+
+describe('getAllOrders', () => {
+  it('returns all orders with no filter when query is empty', async () => {
+    orderFindMany.mockResolvedValue([mockOrder] as never)
+    orderCount.mockResolvedValue(1 as never)
+
+    const result = await getAllOrders({ query: '', page: 1 })
+
+    expect(orderFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: {} })
+    )
+    expect(orderCount).toHaveBeenCalledWith({ where: {} })
+    expect(result.data).toHaveLength(1)
+  })
+
+  it('filters by user name when query is provided', async () => {
+    orderFindMany.mockResolvedValue([mockOrder] as never)
+    orderCount.mockResolvedValue(1 as never)
+
+    await getAllOrders({ query: 'john', page: 1 })
+
+    const expectedFilter = { user: { name: { contains: 'john', mode: 'insensitive' } } }
+    expect(orderFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: expectedFilter })
+    )
+    expect(orderCount).toHaveBeenCalledWith({ where: expectedFilter })
+  })
+
+  it('calculates totalPages from the filtered count', async () => {
+    orderFindMany.mockResolvedValue([] as never)
+    orderCount.mockResolvedValue(10 as never)
+
+    const result = await getAllOrders({ query: '', page: 1, limit: 4 })
+
+    expect(result.totalPages).toBe(3)
+  })
 })
 
 describe('createPayPalOrder', () => {
