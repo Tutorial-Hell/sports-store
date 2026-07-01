@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getUserById } from '@/lib/actions/user.actions';
 import UpdateUserForm from './update-user-form-client';
+import { requireAdmin } from '@/lib/auth-guard';
 
 export const metadata: Metadata = {
   title: 'Update User',

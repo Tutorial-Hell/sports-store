@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { getAllUsers, deleteUser } from '@/lib/actions/user.actions';
+import { requireAdmin } from '@/lib/auth-guard';
 import {
   Table,
   TableBody,
@@ -25,6 +26,7 @@ const AdminUserPage = async (props: {
     query: string;
   }>;
 }) => {
+  await requireAdmin();
   const { page = '1', query = '' } = await props.searchParams;
 
   const users = await getAllUsers({ page: Number(page), query });

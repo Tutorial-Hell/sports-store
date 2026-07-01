@@ -2,6 +2,7 @@ import ProductForm from '@/components/admin/product-form';
 import { getProductById } from '@/lib/actions/product.actions';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { requireAdmin } from '@/lib/auth-guard';
 
 export const metadata: Metadata = {
   title: 'Update Product',
@@ -12,6 +13,7 @@ const AdminProductUpdatePage = async (props: {
     id: string;
   }>;
 }) => {
+  await requireAdmin();
   const { id } = await props.params;
 
   const product = await getProductById(id);

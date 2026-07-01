@@ -36,24 +36,70 @@ export async function getAllProducts({
   limit = PAGE_SIZE,
   page,
   category,
+  price,
+  rating,
+  sort,
 }: {
   query: string;
   limit?: number;
   page: number;
   category?: string;
+  price?: string;
+  rating?: string;
+  sort?: string;
 }) {
-  const queryFilter = query
-    ? { name: { contains: query, mode: 'insensitive' as const } }
-    : {};
+  // Query Filter
+  const queryFilter =
+    query && query !== 'all'
+      ? { name: { contains: query, mode: 'insensitive' as const } }
+      : {};
+
+  // Category Filter
+  const categoryFilter = category && category !== 'all' ? { category } : {};
+
+  // Price Filter
+  const priceFilter =
+    price && price !== 'all'
+      ? {
+          price: {
+            gte: Number(price.split('-')[0]),
+            lte: Number(price.split('-')[1]),
+          },
+        }
+      : {};
+
+  // Rating Filter
+  const ratingFilter =
+    rating && rating !== 'all'
+      ? {
+          rating: {
+            gte: Number(rating),
+          },
+        }
+      : {};
+
+  const where = {
+    ...queryFilter,
+    ...categoryFilter,
+    ...priceFilter,
+    ...ratingFilter,
+  };
 
   const data = await prisma.product.findMany({
-    where: queryFilter,
-    orderBy: { createdAt: 'desc' },
+    where,
+    orderBy:
+      sort === 'lowest'
+        ? { price: 'asc' }
+        : sort === 'highest'
+          ? { price: 'desc' }
+          : sort === 'rating'
+            ? { rating: 'desc' }
+            : { createdAt: 'desc' },
     skip: (page - 1) * limit,
     take: limit,
   });
 
-  const dataCount = await prisma.product.count({ where: queryFilter });
+  const dataCount = await prisma.product.count({ where });
 
   return {
     data,
