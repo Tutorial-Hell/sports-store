@@ -22,6 +22,15 @@ vi.mock('@/db/prisma', () => ({
       count: vi.fn(),
       update: vi.fn(),
     },
+    review: {
+      findMany: vi.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      count: vi.fn(),
+      aggregate: vi.fn(),
+    },
+    $transaction: vi.fn(),
   },
 }))
 

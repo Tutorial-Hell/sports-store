@@ -16,6 +16,12 @@ import z from 'zod';
 import { PAGE_SIZE } from '../constants';
 import { revalidatePath } from 'next/cache';
 
+async function requireAdmin() {
+  const session = await auth();
+  if ((session?.user as { role?: string })?.role !== 'admin')
+    throw new Error('Unauthorized');
+}
+
 // action to sign in user
 export async function signInWithCredentials(
   prevState: unknown,
@@ -161,6 +167,7 @@ export async function getAllUsers({
   page: number;
   query: string;
 }) {
+  await requireAdmin();
   const queryFilter = query
     ? { name: { contains: query, mode: 'insensitive' as const } }
     : {};
@@ -183,6 +190,7 @@ export async function getAllUsers({
 // Action to delete a user
 export async function deleteUser(id: string) {
   try {
+    await requireAdmin();
     await prisma.user.delete({ where: { id: id } });
 
     revalidatePath('/admin/users');
@@ -196,6 +204,7 @@ export async function deleteUser(id: string) {
 // Action to update a user
 export async function updateUser(user: z.infer<typeof updateUserSchema>) {
   try {
+    await requireAdmin();
     await prisma.user.update({
       where: { id: user.id },
       data: {

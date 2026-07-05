@@ -34,6 +34,10 @@ beforeEach(() => {
 })
 
 describe('getAllOrders', () => {
+  beforeEach(() => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1', role: 'admin' } } as never)
+  })
+
   it('returns all orders with no filter when query is empty', async () => {
     orderFindMany.mockResolvedValue([mockOrder] as never)
     orderCount.mockResolvedValue(1 as never)

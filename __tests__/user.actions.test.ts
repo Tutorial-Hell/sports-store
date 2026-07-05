@@ -122,6 +122,10 @@ describe('updateUserPaymentMethod', () => {
 })
 
 describe('getAllUsers', () => {
+  beforeEach(() => {
+    mockAuth.mockResolvedValue({ user: { id: 'user-1', role: 'admin' } } as never)
+  })
+
   it('returns all users with no filter when query is empty', async () => {
     userFindMany.mockResolvedValue([{ id: 'user-1', name: 'John', email: 'john@example.com' }] as never)
     userCount.mockResolvedValue(1 as never)

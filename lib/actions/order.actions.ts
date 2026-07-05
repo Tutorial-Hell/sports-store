@@ -12,6 +12,12 @@ import { revalidatePath } from "next/cache"
 import { PAGE_SIZE } from "../constants"
 import { Prisma } from "@/lib/generated/prisma"
 
+async function requireAdmin() {
+  const session = await auth();
+  if ((session?.user as { role?: string })?.role !== 'admin')
+    throw new Error('Unauthorized');
+}
+
 // Action to create order and order items
 export async function createOrder() {
     try {
@@ -220,6 +226,7 @@ export async function getMyOrders({
 
 // Get all orders (admin)
 export async function getAllOrders({ limit = PAGE_SIZE, page, query }: { limit?: number; page: number; query: string }) {
+    await requireAdmin();
     const queryFilter = query
         ? { user: { name: { contains: query, mode: 'insensitive' as const } } }
         : {};
@@ -247,6 +254,7 @@ type SalesDataType = {
 
 // Get sales data and order summary
 export async function getOrderSummary() {
+    await requireAdmin();
 
     // Get counts for each resource
     const ordersCount = await prisma.order.count()
@@ -291,6 +299,7 @@ export async function getOrderSummary() {
 // Action to delete order
 export async function deleteOrder(id:string) {
     try {
+        await requireAdmin();
         await prisma.order.delete({
             where: {id}
         })
@@ -307,6 +316,7 @@ export async function deleteOrder(id:string) {
 // Action to update order to paid by COD
 export async function updateOrderToPaidCOD(orderId: string) {
     try {
+        await requireAdmin();
         await updateOrderToPaid({
             orderId,
             paymentResult: {
@@ -328,6 +338,7 @@ export async function updateOrderToPaidCOD(orderId: string) {
 // Action to update COD order to delivered
 export async function deliverOrder(orderId: string){
     try{
+        await requireAdmin();
         const order = await prisma.order.findFirst({
             where: { id: orderId}
         })

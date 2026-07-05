@@ -1,10 +1,17 @@
 'use server';
 import { prisma } from '@/db/prisma';
+import { auth } from '@/auth';
 import { convertToPlainObject, formatError } from '../utils';
 import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from '../constants';
 import { revalidatePath } from 'next/cache';
 import { insertProductSchema, updateProductSchema } from '../validators';
 import { z } from 'zod';
+
+async function requireAdmin() {
+  const session = await auth();
+  if ((session?.user as { role?: string })?.role !== 'admin')
+    throw new Error('Unauthorized');
+}
 
 // Get Latest Product
 export async function getLatestProducts() {
@@ -110,6 +117,7 @@ export async function getAllProducts({
 // Action to delete a product
 export async function deleteProduct(id: string) {
   try {
+    await requireAdmin();
     const productExists = await prisma.product.findFirst({
       where: { id },
     });
@@ -131,6 +139,7 @@ export async function deleteProduct(id: string) {
 // Action to Create Product
 export async function createProduct(data: z.infer<typeof insertProductSchema>) {
   try {
+    await requireAdmin();
     const product = insertProductSchema.parse(data);
     await prisma.product.create({ data: product });
 
@@ -144,6 +153,7 @@ export async function createProduct(data: z.infer<typeof insertProductSchema>) {
 // Action to Update Product
 export async function updateProduct(data: z.infer<typeof updateProductSchema>) {
   try {
+    await requireAdmin();
     const product = updateProductSchema.parse(data);
     const productExists = await prisma.product.findFirst({
       where: { id: product.id },
