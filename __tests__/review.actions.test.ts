@@ -23,7 +23,10 @@ const mockReviewData = {
   rating: 5,
 }
 
-const makeTx = (overrides: Record<string, unknown> = {}) => ({
+const makeTx = (hasPurchased = false) => ({
+  order: {
+    findFirst: vi.fn().mockResolvedValue(hasPurchased ? { id: 'order-1' } : null),
+  },
   review: {
     create: vi.fn(),
     update: vi.fn(),
@@ -33,7 +36,6 @@ const makeTx = (overrides: Record<string, unknown> = {}) => ({
   product: {
     update: vi.fn(),
   },
-  ...overrides,
 })
 
 beforeEach(() => {
@@ -46,7 +48,7 @@ describe('createUpdateReview', () => {
     productFindFirst.mockResolvedValue(mockProduct as never)
     reviewFindFirst.mockResolvedValue(null)
     const tx = makeTx()
-    transaction.mockImplementation(async (fn: (tx: typeof tx) => Promise<void>) => fn(tx))
+    transaction.mockImplementation(((fn: (tx: unknown) => Promise<unknown>) => fn(tx)) as never)
 
     const result = await createUpdateReview(mockReviewData)
 
@@ -58,12 +60,38 @@ describe('createUpdateReview', () => {
     expect(tx.product.update).toHaveBeenCalled()
   })
 
+  it('sets isVerifiedPurchase to true when user has a paid order for the product', async () => {
+    productFindFirst.mockResolvedValue(mockProduct as never)
+    reviewFindFirst.mockResolvedValue(null)
+    const tx = makeTx(true) // hasPurchased = true
+    transaction.mockImplementation(((fn: (tx: unknown) => Promise<unknown>) => fn(tx)) as never)
+
+    await createUpdateReview(mockReviewData)
+
+    expect(tx.review.create).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ isVerifiedPurchase: true }) })
+    )
+  })
+
+  it('sets isVerifiedPurchase to false when user has no paid order for the product', async () => {
+    productFindFirst.mockResolvedValue(mockProduct as never)
+    reviewFindFirst.mockResolvedValue(null)
+    const tx = makeTx(false) // hasPurchased = false
+    transaction.mockImplementation(((fn: (tx: unknown) => Promise<unknown>) => fn(tx)) as never)
+
+    await createUpdateReview(mockReviewData)
+
+    expect(tx.review.create).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ isVerifiedPurchase: false }) })
+    )
+  })
+
   it('updates an existing review instead of creating a duplicate', async () => {
     const existingReview = { id: 'review-1', productId: 'product-1', userId: 'user-1' }
     productFindFirst.mockResolvedValue(mockProduct as never)
     reviewFindFirst.mockResolvedValue(existingReview as never)
     const tx = makeTx()
-    transaction.mockImplementation(async (fn: (tx: typeof tx) => Promise<void>) => fn(tx))
+    transaction.mockImplementation(((fn: (tx: unknown) => Promise<unknown>) => fn(tx)) as never)
 
     const result = await createUpdateReview(mockReviewData)
 
@@ -72,6 +100,23 @@ describe('createUpdateReview', () => {
       expect.objectContaining({ where: { id: 'review-1' } })
     )
     expect(tx.review.create).not.toHaveBeenCalled()
+  })
+
+  it('re-evaluates isVerifiedPurchase when updating an existing review', async () => {
+    const existingReview = { id: 'review-1', productId: 'product-1', userId: 'user-1' }
+    productFindFirst.mockResolvedValue(mockProduct as never)
+    reviewFindFirst.mockResolvedValue(existingReview as never)
+    const tx = makeTx(true) // now a verified buyer
+    transaction.mockImplementation(((fn: (tx: unknown) => Promise<unknown>) => fn(tx)) as never)
+
+    await createUpdateReview(mockReviewData)
+
+    expect(tx.review.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'review-1' },
+        data: expect.objectContaining({ isVerifiedPurchase: true }),
+      })
+    )
   })
 
   it('returns error when user is not authenticated', async () => {
@@ -106,8 +151,8 @@ describe('createUpdateReview', () => {
     reviewFindFirst.mockResolvedValue(null)
     const tx = makeTx()
     tx.review.aggregate = vi.fn().mockResolvedValue({ _avg: { rating: 4.5 } })
-    tx.review.count = vi.fn().mockResolvedValue(3)
-    transaction.mockImplementation(async (fn: (tx: typeof tx) => Promise<void>) => fn(tx))
+    tx.review.count = vi.fn().mockResolvedValue(3) as never
+    transaction.mockImplementation(((fn: (tx: unknown) => Promise<unknown>) => fn(tx)) as never)
 
     await createUpdateReview(mockReviewData)
 

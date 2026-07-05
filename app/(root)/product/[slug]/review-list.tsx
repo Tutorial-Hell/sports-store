@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Calendar, User } from 'lucide-react';
+import { BadgeCheck, Calendar, User } from 'lucide-react';
 import { formatDateTime } from '@/lib/utils';
 import Rating from '@/components/shared/product/rating';
 
@@ -71,7 +71,7 @@ const ReviewList = ({
               <CardDescription>{review.description}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className='flex space-x-4 text-sm text-muted-foreground'>
+              <div className='flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground'>
                 <Rating value={review.rating} />
                 <div className='flex items-center'>
                   <User className='mr-1 h-3 w-3' />
@@ -81,6 +81,12 @@ const ReviewList = ({
                   <Calendar className='mr-1 h-3 w-3' />
                   {formatDateTime(review.createdAt).dateTime}
                 </div>
+                {review.isVerifiedPurchase && (
+                  <div className='flex items-center text-green-600'>
+                    <BadgeCheck className='mr-1 h-3 w-3' />
+                    Verified Buyer
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

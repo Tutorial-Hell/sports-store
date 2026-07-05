@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Fix isVerifiedPurchase
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals here -->
+- Remove the hardcoded `isVerifiedPurchase: true` default from the Review schema
+- In `createUpdateReview`, query the `Order` table to check whether the reviewing user has a paid order containing the product
+- Set `isVerifiedPurchase` to `true` only if such an order exists, `false` otherwise
+- Ensure the check also applies when updating an existing review (re-evaluate on each update)
+- Add unit tests covering: verified buyer, non-verified buyer, and the update path
 
 ## Notes
 
-<!-- Add notes here -->
+- The `isVerifiedPurchase` column lives in `prisma/schema.prisma` with `@default(true)` — the default can stay for raw DB inserts but the action must always supply the value explicitly
+- The check should use `tx` (inside the existing transaction) so it is consistent with the rest of the write
+- Query: user has an `Order` where `isPaid = true` and `orderitems` contains the `productId`
+- The `insertReviewSchema` does not include `isVerifiedPurchase` — the value should be computed in the action, not passed from the client
 
 ## History
 

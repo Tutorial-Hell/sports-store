@@ -37,6 +37,14 @@ export async function createUpdateReview(
     });
 
     await prisma.$transaction(async (tx) => {
+      const hasPurchased = !!(await tx.order.findFirst({
+        where: {
+          userId: review.userId,
+          isPaid: true,
+          orderitems: { some: { productId: review.productId } },
+        },
+      }));
+
       if (reviewExists) {
         // update review
         await tx.review.update({
@@ -45,12 +53,13 @@ export async function createUpdateReview(
             title: review.title,
             description: review.description,
             rating: review.rating,
+            isVerifiedPurchase: hasPurchased,
           },
         });
       } else {
         // create review
         await tx.review.create({
-          data: review,
+          data: { ...review, isVerifiedPurchase: hasPurchased },
         });
       }
 
