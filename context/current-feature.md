@@ -1,23 +1,16 @@
-# Current Feature: Fix isVerifiedPurchase
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Remove the hardcoded `isVerifiedPurchase: true` default from the Review schema
-- In `createUpdateReview`, query the `Order` table to check whether the reviewing user has a paid order containing the product
-- Set `isVerifiedPurchase` to `true` only if such an order exists, `false` otherwise
-- Ensure the check also applies when updating an existing review (re-evaluate on each update)
-- Add unit tests covering: verified buyer, non-verified buyer, and the update path
+<!-- Add goals here -->
 
 ## Notes
 
-- The `isVerifiedPurchase` column lives in `prisma/schema.prisma` with `@default(true)` — the default can stay for raw DB inserts but the action must always supply the value explicitly
-- The check should use `tx` (inside the existing transaction) so it is consistent with the rest of the write
-- Query: user has an `Order` where `isPaid = true` and `orderitems` contains the `productId`
-- The `insertReviewSchema` does not include `isVerifiedPurchase` — the value should be computed in the action, not passed from the client
+<!-- Add notes here -->
 
 ## History
 
@@ -107,6 +100,13 @@ In Progress
 - Fixed `components/admin/admin-search.tsx`: replaced `useState`/`useEffect` (which caused a React Compiler `setState-in-effect` build error) with an uncontrolled input using `defaultValue` and a `key` prop keyed on the query param
 - Wired `AdminSearch` into `app/admin/layout.tsx`, replacing the previous static `<Input>` that had no form or action
 - Added 4 unit tests for `getAllProducts` covering empty query, filtered query, pagination count, and pagination skip; added `count` mock to `__tests__/setup.ts`
+
+### Fix isVerifiedPurchase
+- Replaced the Prisma schema `@default(true)` on `isVerifiedPurchase` with an explicit server-side check in `createUpdateReview`
+- Inside the existing `$transaction`, queries `Order` for a paid order by the reviewer that includes the reviewed product; sets `isVerifiedPurchase: !!hasPurchased` on both create and update paths
+- Added `isVerifiedPurchase: boolean` to the `Review` type in `types/index.ts`
+- Added a "Verified Buyer" badge (`BadgeCheck` icon, green) to the review card in `review-list.tsx` — only shown when `isVerifiedPurchase` is true
+- Added 3 new unit tests: verified buyer on create, non-verified buyer on create, re-evaluation on update
 
 ### Sales Chart
 - Added `app/admin/` section with layout (`app/admin/layout.tsx`) and main-nav (`app/admin/main-nav.tsx`) linking Overview, Products, Orders, Users
