@@ -67,6 +67,12 @@ function Carousel({
     setCanScrollNext(api.canScrollNext())
   }, [])
 
+  const [lastSyncedApi, setLastSyncedApi] = React.useState<CarouselApi | null>(null)
+  if (api && api !== lastSyncedApi) {
+    setLastSyncedApi(api)
+    onSelect(api)
+  }
+
   const scrollPrev = React.useCallback(() => {
     api?.scrollPrev()
   }, [api])
@@ -95,7 +101,6 @@ function Carousel({
 
   React.useEffect(() => {
     if (!api) return
-    onSelect(api)
     api.on("reInit", onSelect)
     api.on("select", onSelect)
 
