@@ -15,6 +15,7 @@ import { createPayPalOrder,
      } from "@/lib/actions/order.actions";
 import { useTransition } from 'react'
 import { toast } from "sonner";
+import StripePayment from "./stripe-payment";
 
 
 const PrintLoadingState = () => {
@@ -65,8 +66,8 @@ const MarkAsDeliveredButton = ({orderId}: {orderId: string}) => {
     )
 }
 
-const OrderDetailsTable = ({order, paypalClientId,isAdmin}:
-    {order: Order, paypalClientId: string, isAdmin:boolean}) => {
+const OrderDetailsTable = ({order, paypalClientId,isAdmin,stripeClientSecret}:
+    {order: Order, paypalClientId: string, isAdmin:boolean; stripeClientSecret: string | null}) => {
     const {
         id,
         shippingAddress,
@@ -103,7 +104,7 @@ const OrderDetailsTable = ({order, paypalClientId,isAdmin}:
     return ( <>
         <h1 className="py-4 text-2xl">Order {formatId(id)}</h1>
         <div className="grid md:grid-cols-3 md:gap-5">
-            <div className="cols-span-2 space-4-y overlfow-x-auto">
+            <div className="col-span-2 space-y-4 overflow-x-auto">
                 <Card>
                     <CardContent className="p-4 gap-4">
                         <h2 className="text-xl pb-4">Payment Method</h2>
@@ -202,6 +203,18 @@ const OrderDetailsTable = ({order, paypalClientId,isAdmin}:
                                     />
                                 </PayPalScriptProvider>
                             )}
+
+                            {/* Stripe Payment */}
+                            {
+                                !isPaid && paymentMethod === 'Stripe' && stripeClientSecret &&
+                                <StripePayment 
+                                    priceInCents={Number(order.totalPrice) * 100}
+                                    orderId={order.id}
+                                    clientSecret={stripeClientSecret}
+                                />
+                            }
+
+
                             {/* Cash On Delivery */}
                             {isAdmin && !isPaid && paymentMethod == 'CashOnDelivery' && (
                                 <MarkAsPaidButton orderId={id}/>
