@@ -49,6 +49,11 @@
     "ws": "^8.21.0",
     "zod": "^4.4.3"
   },
+  "overrides": {
+    "@uploadthing/react": {
+      "react": "$react"
+    }
+  },
   "devDependencies": {
     "@prisma/client": "^7.8.0",
     "@tailwindcss/postcss": "^4.3.0",
