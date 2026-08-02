@@ -213,7 +213,7 @@ export async function updateOrderToPaid({orderId, paymentResult}: {orderId: stri
     try {
         await sendPurchaseReceipt({
             order: {
-                ...convertToPlainObject(updatedOrder),
+                ...updatedOrder,
                 shippingAddress: updatedOrder.shippingAddress as ShippingAddress,
                 paymentResult,
             } as Order
