@@ -6,11 +6,12 @@ import { getMyCart } from "./cart.actions"
 import { getUserById } from "./user.actions"
 import { insertOrderSchema } from "../validators"
 import { prisma } from '@/db/prisma'
-import { CartItem, Order, PaymentResult } from "@/types"
+import { CartItem, Order, PaymentResult, ShippingAddress } from "@/types"
 import { paypal } from "../paypal"
 import { revalidatePath } from "next/cache"
 import { PAGE_SIZE } from "../constants"
 import { Prisma } from "@/lib/generated/prisma"
+import { sendPurchaseReceipt } from "@/email"
 
 async function requireAdmin() {
   const session = await auth();
@@ -198,6 +199,28 @@ export async function updateOrderToPaid({orderId, paymentResult}: {orderId: stri
             paymentResult,
         }
     })
+
+    const updatedOrder = await prisma.order.findFirst({
+        where: {id: orderId},
+        include: {
+            orderitems: true,
+            user: {select: {name: true, email: true}},
+        }
+    })
+
+    if(!updatedOrder) throw new Error('Order not found')
+
+    try {
+        await sendPurchaseReceipt({
+            order: {
+                ...convertToPlainObject(updatedOrder),
+                shippingAddress: updatedOrder.shippingAddress as ShippingAddress,
+                paymentResult,
+            } as Order
+        })
+    } catch (error) {
+        console.error('Failed to send purchase receipt email', error)
+    }
 }
 
 // Get User's Orders
