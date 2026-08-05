@@ -37,11 +37,10 @@ const DealCountdown = () => {
         const timerInterval = setInterval(() => {
             const newTime = calculateTimeRemaining(TARGET_DATE)
             setTime(newTime)
-            if(newTime.days === 0 && newTime.hours === 0 && newTime.minutes === 0 && 
+            if(newTime.days === 0 && newTime.hours === 0 && newTime.minutes === 0 &&
                 newTime.seconds === 0) {
                 clearInterval(timerInterval)
-            } 
-            return clearInterval(timerInterval)
+            }
          }, 1000)
     },[])
 
