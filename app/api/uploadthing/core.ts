@@ -14,8 +14,9 @@ export const ourFileRouter = {
       const session = await auth();
 
       if (!session) throw new UploadThingError('Unauthorized');
+      if (session.user?.role !== 'admin') throw new UploadThingError('Unauthorized');
 
-      return { userId: session?.user?.id };
+      return { userId: session.user.id };
     })
     .onUploadComplete(async ({ metadata }) => {
       return { uploadedBy: metadata.userId };
