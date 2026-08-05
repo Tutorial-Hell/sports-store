@@ -17,18 +17,18 @@ const Search = async () => {
       <div className='flex w-full max-w-sm items-center space-x-2'>
         <Select name='category'>
           <SelectTrigger className='w-[180px]'>
-            <SelectContent>
-              <SelectItem key='All' value='all'>
-                All
-              </SelectItem>
-              {categories.map((x) => (
-                <SelectItem key={x.category} value={x.category}>
-                  {x.category}
-                </SelectItem>
-              ))}
-            </SelectContent>
             <SelectValue placeholder='All' />
           </SelectTrigger>
+          <SelectContent>
+            <SelectItem key='All' value='all'>
+              All
+            </SelectItem>
+            {categories.map((x) => (
+              <SelectItem key={x.category} value={x.category}>
+                {x.category}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
         <Input
           name='q'

@@ -20,9 +20,7 @@ const PlaceOrderButton = () => {
 const  PlaceOrderForm= () => {
     const router = useRouter()
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault()
-
+    const handleSubmit = async () => {
         const res = await createOrder()
 
         if(res.redirectTo) {
@@ -30,7 +28,7 @@ const  PlaceOrderForm= () => {
         }
     }
 
-    return ( <form onSubmit={handleSubmit} className="w-full">
+    return ( <form action={handleSubmit} className="w-full">
         <PlaceOrderButton />
     </form> );
 }

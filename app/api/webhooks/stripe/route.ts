@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
                     id: object.id,
                     status: 'COMPLETED',
                     email_address: object.billing_details.email!,
-                    pricePaid: (object.amount /100).toFixed()
+                    pricePaid: (object.amount /100).toFixed(2)
                 }
             })
             return NextResponse.json({

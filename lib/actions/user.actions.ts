@@ -5,6 +5,7 @@ import {
   shippingAddressSchema,
   paymentMethodSchema,
   updateUserSchema,
+  updateProfileSchema,
 } from '../validators';
 import { ShippingAddress } from '@/types';
 import { auth, signIn, signOut } from '@/auth';
@@ -115,8 +116,10 @@ export async function updateUserPaymentMethod(
 ) {
   try {
     const session = await auth();
+    if (!session?.user?.id) throw new Error('Not authenticated');
+
     const currentUser = await prisma.user.findFirst({
-      where: { id: session?.user?.id },
+      where: { id: session.user.id },
     });
     if (!currentUser) throw new Error('User not found');
 
@@ -136,16 +139,20 @@ export async function updateUserPaymentMethod(
 export async function updateProfile(user: { name: string; email: string }) {
   try {
     const session = await auth();
+    if (!session?.user?.id) throw new Error('Not authenticated');
+
     const currentUser = await prisma.user.findFirst({
       where: {
-        id: session?.user?.id,
+        id: session.user.id,
       },
     });
     if (!currentUser) throw new Error('User not found');
 
+    const { name } = updateProfileSchema.parse(user);
+
     await prisma.user.update({
       where: { id: currentUser.id },
-      data: { name: user.name },
+      data: { name },
     });
 
     return { success: true, message: 'User sucessfully updated' };
