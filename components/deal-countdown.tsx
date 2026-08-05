@@ -31,6 +31,7 @@ const DealCountdown = () => {
 
     useEffect(() => {
         // Calculate initial time on client
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setTime(calculateTimeRemaining(TARGET_DATE))
 
         const timerInterval = setInterval(() => {
