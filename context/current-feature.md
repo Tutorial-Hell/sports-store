@@ -116,3 +116,7 @@ Not Started
 - Fixed IDOR vulnerability in `getOrderById`, `createPayPalOrder`, `approvePayPalOrder` — added auth session check and `userId` scoping; admin users bypass `userId` filter in `getOrderById`
 - Added admin link to `components/shared/header/user-button.tsx` for users with `role === 'admin'`
 - Added `types/next-auth.d.ts` to augment session user with `role` field
+
+### Fix Stripe Return URL Domain
+- Fixed `app/(root)/order/[id]/stripe-payment.tsx`: `return_url` passed to `stripe.confirmPayment` was built from `SERVER_URL` (`lib/constants/index.ts`), a build-time `NEXT_PUBLIC_SERVER_URL`/`VERCEL_URL` value baked into the client bundle — caused customers checking out on the custom Namecheap domain to be redirected back to the Vercel domain after payment
+- Since `StripeForm` only ever runs in the browser (parent `order-details-table.tsx` is `'use client'`), switched to `window.location.origin` computed at submit time so the redirect always matches the domain the customer is actually on
