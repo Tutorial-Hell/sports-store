@@ -4,7 +4,6 @@ import { useTheme } from 'next-themes';
 import {FormEvent, useState} from 'react'
 import { Button } from '@/components/ui/button';
 import { FormatCurrency } from '@/lib/utils';
-import { SERVER_URL } from '@/lib/constants';
 
 
 
@@ -26,7 +25,7 @@ const StripeForm = ({priceInCents, orderId} : {priceInCents: number; orderId: st
         stripe.confirmPayment({
             elements,
             confirmParams: {
-                return_url: `${SERVER_URL}/order/${orderId}/stripe-payment-success`
+                return_url: `${window.location.origin}/order/${orderId}/stripe-payment-success`
             }
         }).then(({error}) => {
             if(error?.type === 'card_error' || error?.type === 'validation_error') {
